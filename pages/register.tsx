@@ -8,9 +8,8 @@ import Input from "@components/Input";
 import Button from "@components/Button";
 import SEO from "@components/SEO";
 
-export const Home = (): JSX.Element => {
+export const Register = (): JSX.Element => {
   const router = useRouter();
-
   return (
     <>
       <SEO title="Mediassemble" description="Mediassemble home page" />
@@ -24,11 +23,13 @@ export const Home = (): JSX.Element => {
         >
           <Box>
             <H1 fontWeight={500} fontSize={48} mb="14px">
-              Login
+              Criar uma conta
             </H1>
             <P color="dark.secondary" mb="80px" fontSize="16px">
-              Você pode criar uma conta se não tiver.
+              Você pode fazer login se já tiver conta.
             </P>
+            <Input label="Nome" id="name" placeholder="Jhon Doe" type="text" />
+            <Box height="32px" />
             <Input
               label="Email"
               id="email"
@@ -42,14 +43,18 @@ export const Home = (): JSX.Element => {
               placeholder="··········"
               type="password"
             />
+            <Box height="32px" />
+            <Input
+              label="Confirmar senha"
+              id="confirm-password"
+              placeholder="··········"
+              type="password"
+            />
             <Box height="72px" />
-            <Button>LOGIN</Button>
+            <Button>REGISTRAR</Button>
             <Box height="24px" />
-            <Button
-              variant="secondary"
-              onClick={() => router.push("/register")}
-            >
-              CRIAR UMA CONTA
+            <Button variant="secondary" onClick={router.back}>
+              VOLTAR
             </Button>
           </Box>
         </Flex>
@@ -58,4 +63,4 @@ export const Home = (): JSX.Element => {
   );
 };
 
-export default Home;
+export default Register;

@@ -2,10 +2,13 @@ export const colors = {
   dark: {
     primary: "#212529",
     secondary: "#495057",
+    lightGrey: "#DEE2E6",
+    grey: "#ADB5BD",
   },
   blue: {
     primary: "#0096C7",
   },
+  offWhite: "#F8F9FA",
   white: "#FFFFFF",
 };
 
@@ -15,11 +18,15 @@ export const colors = {
 export type Colors =
   | "dark.primary"
   | "dark.secondary"
+  | "dark.lightGrey"
+  | "dark.grey"
   | "blue.primary"
-  | "white";
+  | "white"
+  | "offWhite";
 
 export const theme = {
   colors,
+  space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
 };
 
 export type Theme = typeof theme;
