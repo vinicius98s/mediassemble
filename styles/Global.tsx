@@ -1,8 +1,8 @@
 import { css, Global } from "@emotion/core";
 
-import { Theme } from "./theme";
+import { theme, Theme } from "./theme";
 
-export default () => (
+const GlobalTheme = () => (
   <Global<Theme>
     styles={css`
       * {
@@ -11,6 +11,12 @@ export default () => (
         box-sizing: border-box;
         font-family: "Montserrat", sans-serif;
       }
+
+      body {
+        background: ${theme.colors.offWhite};
+      }
     `}
   />
 );
+
+export default GlobalTheme;

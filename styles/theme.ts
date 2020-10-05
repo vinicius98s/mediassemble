@@ -1,3 +1,5 @@
+import baseStyled, { CreateStyled } from "@emotion/styled";
+
 export const colors = {
   dark: {
     primary: "#212529",
@@ -10,6 +12,14 @@ export const colors = {
   },
   offWhite: "#F8F9FA",
   white: "#FFFFFF",
+  collections: {
+    green: "#6DB822",
+    blue: "#2294B8",
+    yellow: "#DBDE4D",
+    purple: "#B522B8",
+    orange: "#EE6213",
+    red: "#B82222",
+  },
 };
 
 // atm this have to be manually set,
@@ -26,8 +36,10 @@ export type Colors =
 
 export const theme = {
   colors,
-  space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
+  //      0  1  2  3   4   5   6   7   8   9   10  11   12   13
+  space: [0, 4, 8, 12, 16, 24, 32, 48, 64, 72, 80, 128, 256, 512],
 };
 
+export const styled = baseStyled as CreateStyled<typeof theme>;
 export type Theme = typeof theme;
 export type PropsWithTheme<P> = P & { theme: Theme };

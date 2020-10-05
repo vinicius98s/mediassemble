@@ -39,8 +39,7 @@ const Greeting: React.FC<Props> = ({ bg = "offWhite", children }) => {
         height="100vh"
         bg={bg}
         maxWidth={831}
-        width={"100%"}
-        flex="1"
+        width="100%"
         position="relative"
         overflow="hidden"
       >

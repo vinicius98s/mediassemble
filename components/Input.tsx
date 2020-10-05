@@ -9,7 +9,8 @@ interface Props {
   id: string;
   placeholder: string;
   width?: number;
-  type?: InputHTMLAttributes<any>["type"];
+  type?: InputHTMLAttributes<HTMLInputElement>["type"];
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Line = styled.div`
@@ -42,6 +43,7 @@ const Input: React.FC<Props> = ({
   placeholder,
   width = 410,
   type,
+  onChange,
 }) => {
   return (
     <Box width={width}>
@@ -57,7 +59,12 @@ const Input: React.FC<Props> = ({
         </Text>
       </label>
       <Box maxWidth={width} width="100%" position="relative">
-        <StyledInput placeholder={placeholder} id={id} type={type} />
+        <StyledInput
+          onChange={onChange}
+          placeholder={placeholder}
+          id={id}
+          type={type}
+        />
         <Line />
       </Box>
     </Box>

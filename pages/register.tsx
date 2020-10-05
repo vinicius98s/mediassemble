@@ -20,6 +20,7 @@ export const Register = (): JSX.Element => {
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
+          bg="white"
         >
           <Box>
             <H1 fontWeight={500} fontSize={48} mb="14px">
@@ -51,9 +52,9 @@ export const Register = (): JSX.Element => {
               type="password"
             />
             <Box height="72px" />
-            <Button>REGISTRAR</Button>
+            <Button width="100%">REGISTRAR</Button>
             <Box height="24px" />
-            <Button variant="secondary" onClick={router.back}>
+            <Button width="100%" variant="secondary" onClick={router.back}>
               VOLTAR
             </Button>
           </Box>
