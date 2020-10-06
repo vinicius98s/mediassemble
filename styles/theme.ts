@@ -34,6 +34,8 @@ export type Colors =
   | "white"
   | "offWhite";
 
+export type CollectionColors = keyof typeof colors["collections"];
+
 export const theme = {
   colors,
   //      0  1  2  3   4   5   6   7   8   9   10  11   12   13

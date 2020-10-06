@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   background: ${(p) => p.theme.colors.blue.primary};
   display: flex;
   align-items: center;
-  padding: 16px 128px;
+  padding: 16px 80px;
   color: ${(p) => p.theme.colors.white};
   justify-content: space-between;
   font-size: 14px;

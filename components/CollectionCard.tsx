@@ -11,13 +11,13 @@ const Wrapper = styled.div`
   border-radius: 12px;
   background: ${(p) => p.theme.colors.white};
   box-shadow: 0px 1px 10px -1px rgba(0, 0, 0, 0.08);
-  max-width: 20.4vw;
+  max-width: 20%;
   min-width: 345px;
   width: 100%;
-  height: 237px;
+  height: 220px;
   position: relative;
   padding: ${(p) => `${p.theme.space[5]}px ${p.theme.space[6]}px`};
-  margin-bottom: ${(p) => p.theme.space[6]}px;
+  margin-bottom: ${(p) => p.theme.space[7]}px;
 `;
 
 const Border = styled.div<{ color: Props["color"] }>`
@@ -55,7 +55,7 @@ const CollectionCard: React.FC<Props> = ({
     <Link href="/collections/[collection]" as={`/collections/${slug}`}>
       <Wrapper>
         <Border color={color} />
-        <Flex alignItems="center" mb={6}>
+        <Flex alignItems="center" mb={4}>
           <i
             data-eva="inbox"
             data-eva-fill="#212529"

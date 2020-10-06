@@ -14,7 +14,7 @@ import ColorPicker from "@components/ColorPicker";
 
 const CollectionsWrapper = styled(Flex)`
   div:not(:last-of-type) {
-    margin-right: ${(p) => p.theme.space[5]}px;
+    margin-right: ${(p) => p.theme.space[6]}px;
   }
 `;
 
@@ -41,7 +41,7 @@ const Collections: React.FC = () => {
       <Container
         title="Minhas Coleções"
         actions={
-          <Button onClick={() => setAddCollectionModal(true)}>
+          <Button ml="auto" onClick={() => setAddCollectionModal(true)}>
             ADICIONAR COLEÇÃO
           </Button>
         }
