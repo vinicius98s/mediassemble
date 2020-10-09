@@ -11,13 +11,10 @@ const Wrapper = styled.div`
   border-radius: 12px;
   background: ${(p) => p.theme.colors.white};
   box-shadow: 0px 1px 10px -1px rgba(0, 0, 0, 0.08);
-  max-width: 20%;
-  min-width: 345px;
   width: 100%;
   height: 220px;
   position: relative;
   padding: ${(p) => `${p.theme.space[5]}px ${p.theme.space[6]}px`};
-  margin-bottom: ${(p) => p.theme.space[7]}px;
 `;
 
 const Border = styled.div<{ color: Props["color"] }>`
@@ -33,7 +30,7 @@ const Border = styled.div<{ color: Props["color"] }>`
 const TotalFiles = styled.div`
   position: absolute;
   bottom: ${(p) => `${p.theme.space[5]}px`};
-  right: ${(p) => `${p.theme.space[4]}px`};
+  right: ${(p) => `${p.theme.space[5]}px`};
 `;
 
 interface Props {

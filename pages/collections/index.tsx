@@ -1,18 +1,27 @@
 import React, { useState } from "react";
 
-import Header from "@components/Header";
 import CollectionCard from "@components/CollectionCard";
 import SEO from "@components/SEO";
 import Container from "@components/Container";
 import Button from "@components/Button";
 import Modal from "@components/Modal";
 import { Box, Flex } from "@components/Box";
-
-import { styled } from "@styles/theme";
 import Input from "@components/Input";
 import ColorPicker from "@components/ColorPicker";
 
-const CollectionsWrapper = styled(Flex)`
+import { styled } from "@styles/theme";
+
+const CollectionsWrapper = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  grid-column-gap: 32px;
+  grid-row-gap: 32px;
+
+  @media (max-width: 1480px) {
+    grid-template-columns: auto auto auto;
+  }
+
   div:not(:last-of-type) {
     margin-right: ${(p) => p.theme.space[6]}px;
   }
@@ -37,7 +46,6 @@ const Collections: React.FC = () => {
         </Flex>
       </Modal>
       <SEO title="Collections" description="Collections page" />
-      <Header name="Jhon Doe" />
       <Container
         title="Minhas Coleções"
         actions={
@@ -46,7 +54,7 @@ const Collections: React.FC = () => {
           </Button>
         }
       >
-        <CollectionsWrapper width="100%" flexWrap="wrap">
+        <CollectionsWrapper>
           <CollectionCard
             color="green"
             name="Escola"

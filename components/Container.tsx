@@ -4,14 +4,15 @@ import React from "react";
 import { Box, Flex } from "./Box";
 import { H1 } from "./Text";
 import Breadcrumb, { Props as BreadcrumbProps } from "./Breadcrumb";
+import Header from "./Header";
 
 interface Props {
   title?: string;
   actions?: JSX.Element;
+  breadcrumb?: BreadcrumbProps["items"];
   collection?: {
     name: string;
     color: CollectionColors;
-    breadcrumb: BreadcrumbProps["items"];
   };
 }
 
@@ -28,23 +29,25 @@ const Container: React.FC<Props> = ({
   actions,
   collection,
   children,
+  breadcrumb,
 }) => {
   return (
-    <Box mx={10} mt={10}>
-      <Flex flexDirection="row" width="100%" mb={9} alignItems="center">
-        {collection && <Border color={collection.color} />}
-        <Box>
-          <H1 fontWeight="500" fontSize="34px" letterSpacing="-0.5px">
-            {title || collection?.name}
-          </H1>
-          {collection?.breadcrumb && (
-            <Breadcrumb items={collection?.breadcrumb} />
-          )}
-        </Box>
-        {actions && actions}
-      </Flex>
-      {children}
-    </Box>
+    <>
+      <Header name="Jhon Doe" />
+      <Box mx={10} mt={10}>
+        <Flex flexDirection="row" width="100%" mb={9} alignItems="center">
+          {collection && <Border color={collection.color} />}
+          <Box>
+            <H1 fontWeight="500" fontSize="34px" letterSpacing="-0.5px">
+              {title || collection?.name}
+            </H1>
+            {breadcrumb && <Breadcrumb items={breadcrumb} />}
+          </Box>
+          {actions && actions}
+        </Flex>
+        {children}
+      </Box>
+    </>
   );
 };
 

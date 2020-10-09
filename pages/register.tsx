@@ -23,7 +23,7 @@ export const Register = (): JSX.Element => {
           bg="white"
         >
           <Box>
-            <H1 fontWeight={500} fontSize={48} mb="14px">
+            <H1 fontWeight={500} fontSize="46px" mb="14px">
               Criar uma conta
             </H1>
             <P color="dark.secondary" mb="80px" fontSize="16px">

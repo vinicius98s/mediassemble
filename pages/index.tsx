@@ -33,10 +33,10 @@ export const Home = (): JSX.Element => {
           bg="white"
         >
           <Box>
-            <H1 fontWeight="500" fontSize={7} mb="14px">
+            <H1 fontWeight="500" fontSize={6} mb="14px">
               Login
             </H1>
-            <P color="dark.secondary" mb={10} fontSize={4}>
+            <P color="dark.secondary" mb={10} fontSize={3}>
               Você pode criar uma conta se não tiver.
             </P>
             <form onSubmit={handleSubmit}>

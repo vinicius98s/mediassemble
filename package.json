@@ -4,7 +4,7 @@
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8080",
     "build": "next build",
     "start": "next start",
     "type-check": "tsc --pretty --noEmit",
@@ -38,6 +38,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-modal": "^3.11.2",
+    "react-select": "^3.1.0",
     "styled-system": "^5.1.5"
   },
   "devDependencies": {
@@ -46,6 +47,7 @@
     "@types/node": "^13.9.5",
     "@types/react": "^16.9.27",
     "@types/react-modal": "^3.10.6",
+    "@types/react-select": "^3.0.21",
     "@types/styled-system": "^5.1.10",
     "@types/styled-system__should-forward-prop": "^5.1.2",
     "@typescript-eslint/eslint-plugin": "^2.25.0",

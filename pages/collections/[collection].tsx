@@ -1,9 +1,9 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 
-import Header from "@components/Header";
 import SEO from "@components/SEO";
 import Container from "@components/Container";
-import { Flex } from "@components/Box";
+import { Box, Flex } from "@components/Box";
 import Button from "@components/Button";
 import Modal from "@components/Modal";
 import { Text } from "@components/Text";
@@ -42,6 +42,7 @@ const Actions: React.FC<ActionsProps> = ({
 );
 
 const Collections: React.FC = () => {
+  const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   return (
@@ -49,10 +50,11 @@ const Collections: React.FC = () => {
       <Modal
         isOpen={isDeleteModalOpen}
         onRequestClose={() => setIsDeleteModalOpen(false)}
+        minHeight={480}
         title="Deletar coleção?"
       >
         <DeleteTextWrapper>
-          <Text fontSize="22px" fontWeight="400" lineHeight="30px">
+          <Text fontSize="20px" fontWeight="400" lineHeight="30px">
             Tem certeza que deseja deletar a coleção <b>Escola</b>?
             <br />
             <br />
@@ -67,38 +69,44 @@ const Collections: React.FC = () => {
         </DeleteTextWrapper>
       </Modal>
       <SEO title="Collections" description="Collections page" />
-      <Header name="Jhon Doe" />
       <Container
+        breadcrumb={[
+          { label: "Minhas Coleções", href: "/collections", isActive: false },
+          {
+            label: "Escola",
+            href: {
+              pathname: "/collections/[collection]",
+              href: `/collections/escola`,
+            },
+            isActive: true,
+          },
+        ]}
         collection={{
           name: "Escola",
           color: "green",
-          breadcrumb: [
-            { label: "Minhas Coleções", href: "/collections", isActive: false },
-            {
-              label: "Escola",
-              href: {
-                pathname: "/collections/[collection]",
-                href: `/collections/escola`,
-              },
-              isActive: true,
-            },
-          ],
         }}
-        actions={<Actions onDeleteClick={() => setIsDeleteModalOpen(true)} />}
+        actions={
+          <Actions
+            onDeleteClick={() => setIsDeleteModalOpen(true)}
+            onUploadFilesClick={() => router.push("/upload")}
+          />
+        }
       >
         <Flex>
-          <ListFiles
-            files={[
-              { name: "audio_01.mp3" },
-              { name: "audio__002.mp3" },
-              { name: "aula001.mp3" },
-              { name: "audio_aula_2.mp3" },
-              { name: "audio_01.mp3" },
-              { name: "audio__002.mp3" },
-              { name: "aula001.mp3" },
-              { name: "audio_aula_2.mp3" },
-            ]}
-          />
+          <Box width="30vw">
+            <ListFiles
+              files={[
+                { name: "audio_01.mp3" },
+                { name: "audio__002.mp3" },
+                { name: "aula001.mp3" },
+                { name: "audio_aula_2.mp3" },
+                { name: "audio_01.mp3" },
+                { name: "audio__002.mp3" },
+                { name: "aula001.mp3" },
+                { name: "audio_aula_2.mp3" },
+              ]}
+            />
+          </Box>
           <Flex ml="auto">
             <ConvertedText />
           </Flex>
