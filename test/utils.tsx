@@ -1,3 +1,4 @@
+import React from "react";
 import { render, RenderOptions } from "@testing-library/react";
 import { cache } from "emotion";
 import { ThemeProvider } from "emotion-theming";

@@ -1,5 +1,5 @@
-import { CollectionColors, styled } from "@styles/theme";
 import React from "react";
+import { CollectionColors, styled } from "@styles/theme";
 
 import { Box, Flex } from "./Box";
 import { H1 } from "./Text";
@@ -33,7 +33,7 @@ const Container: React.FC<Props> = ({
 }) => {
   return (
     <>
-      <Header name="Jhon Doe" />
+      <Header />
       <Box mx={10} mt={10}>
         <Flex flexDirection="row" width="100%" mb={9} alignItems="center">
           {collection && <Border color={collection.color} />}

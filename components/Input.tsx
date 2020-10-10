@@ -4,14 +4,12 @@ import styled from "@emotion/styled";
 import { Text } from "./Text";
 import { Box } from "./Box";
 
-interface Props {
+type Props = {
   label: string;
   id: string;
   placeholder: string;
   width?: number;
-  type?: InputHTMLAttributes<HTMLInputElement>["type"];
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+} & InputHTMLAttributes<HTMLInputElement>;
 
 const Line = styled.div`
   width: calc(100% - 32px);
@@ -42,8 +40,7 @@ const Input: React.FC<Props> = ({
   id,
   placeholder,
   width = 410,
-  type,
-  onChange,
+  ...props
 }) => {
   return (
     <Box width={width}>
@@ -59,12 +56,7 @@ const Input: React.FC<Props> = ({
         </Text>
       </label>
       <Box maxWidth={width} width="100%" position="relative">
-        <StyledInput
-          onChange={onChange}
-          placeholder={placeholder}
-          id={id}
-          type={type}
-        />
+        <StyledInput placeholder={placeholder} id={id} {...props} />
         <Line />
       </Box>
     </Box>

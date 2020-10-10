@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 import Greeting from "@components/Greeting";
 import { Box, Flex } from "@components/Box";
@@ -8,16 +9,31 @@ import Input from "@components/Input";
 import Button from "@components/Button";
 import SEO from "@components/SEO";
 
-export const Home = (): JSX.Element => {
+import useAuth from "@hooks/useAuth";
+
+export const Home: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const router = useRouter();
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (email === "test@mediassemble.com" && password === "mediassemble") {
+
+  const { isAuthenticated, setUser } = useAuth();
+  useEffect(() => {
+    if (isAuthenticated) {
       router.push("/collections");
     }
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!email && !password) {
+      toast.error("Preencha todos campos!");
+      return;
+    }
+
+    setUser({ name: "Vinicius", username: email });
+
+    router.push("/collections");
   };
 
   return (
@@ -53,6 +69,7 @@ export const Home = (): JSX.Element => {
                 id="password"
                 placeholder="··········"
                 type="password"
+                autoComplete="password"
                 onChange={(e) => setPassword(e.target.value)}
               />
               <Box height="72px" />

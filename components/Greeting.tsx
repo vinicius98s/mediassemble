@@ -43,7 +43,7 @@ const Greeting: React.FC<Props> = ({ bg = "offWhite", children }) => {
         position="relative"
         overflow="hidden"
       >
-        <Box maxWidth={460} mt={246} ml={6}>
+        <Box maxWidth={460} mt={246} ml={10}>
           <H1 fontWeight="normal" fontSize={58} letterSpacing={-0.5}>
             Bem-vindo ao
           </H1>

@@ -4,9 +4,14 @@ import { ThemeProvider } from "emotion-theming";
 import { CacheProvider } from "@emotion/core";
 import * as eva from "eva-icons";
 import Modal from "react-modal";
+import { ToastContainer } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 import GlobalStyles from "@styles/Global";
 import { theme } from "@styles/theme";
+
+import { SWRProvider } from "@services/api";
 
 class MyApp extends App<{ Component: AppProps; pageProps: AppProps }> {
   componentDidMount() {
@@ -25,7 +30,10 @@ class MyApp extends App<{ Component: AppProps; pageProps: AppProps }> {
       <ThemeProvider theme={theme}>
         <CacheProvider value={cache}>
           <GlobalStyles />
-          <Component {...pageProps} />
+          <SWRProvider>
+            <Component {...pageProps} />
+            <ToastContainer />
+          </SWRProvider>
         </CacheProvider>
       </ThemeProvider>
     );

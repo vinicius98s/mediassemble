@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 
 import CollectionCard from "@components/CollectionCard";
 import SEO from "@components/SEO";
@@ -10,6 +11,8 @@ import Input from "@components/Input";
 import ColorPicker from "@components/ColorPicker";
 
 import { styled } from "@styles/theme";
+
+import useAuth from "@hooks/useAuth";
 
 const CollectionsWrapper = styled.div`
   width: 100%;
@@ -29,6 +32,14 @@ const CollectionsWrapper = styled.div`
 
 const Collections: React.FC = () => {
   const [addCollectionModal, setAddCollectionModal] = useState(false);
+  const router = useRouter();
+
+  if (process.browser) {
+    const { isAuthenticated } = useAuth();
+    if (!isAuthenticated) {
+      router.push("/");
+    }
+  }
 
   return (
     <>
