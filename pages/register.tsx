@@ -11,11 +11,17 @@ import Input from "@components/Input";
 import Button from "@components/Button";
 import SEO from "@components/SEO";
 
+interface Response {
+  success: boolean;
+  msg: string;
+}
+
 export const Register = (): JSX.Element => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -28,24 +34,31 @@ export const Register = (): JSX.Element => {
 
     if (password !== confirmPassword) {
       toast.error("Suas senhas não conferem!");
-    }
-
-    interface Response {
-      success: boolean;
-      message: string;
-    }
-
-    const { data, error } = await fetch<Response>("/do_signup", {
-      method: "POST",
-      body: JSON.stringify({ username: email, password, name }),
-    });
-
-    if (!data?.success || error) {
-      toast.error(data?.message || "Erro ao criar usuário!");
       return;
     }
 
-    toast.success("Usuário criado com sucesso!");
+    setIsLoading(true);
+    try {
+      const { data, error } = await fetch<Response>("/do_signup", {
+        method: "POST",
+        body: JSON.stringify({
+          username: email,
+          password: btoa(password),
+          name,
+        }),
+      });
+
+      if (!data?.success || error) {
+        toast.error(data?.msg || "Erro ao criar usuário!");
+        return;
+      }
+
+      toast.success("Usuário criado com sucesso!");
+    } catch (e) {
+      toast.error("Erro ao criar usuário!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -101,14 +114,19 @@ export const Register = (): JSX.Element => {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <Box height="72px" />
-            <Button type="submit" width="100%">
+            <Button type="submit" width="100%" loading={isLoading}>
               REGISTRAR
             </Button>
-            <Box height="24px" />
-            <Button width="100%" variant="secondary" onClick={router.back}>
-              VOLTAR
-            </Button>
           </form>
+          <Button
+            width="100%"
+            maxWidth={410}
+            variant="secondary"
+            onClick={router.back}
+            mt={4}
+          >
+            VOLTAR
+          </Button>
         </Flex>
       </Greeting>
     </>

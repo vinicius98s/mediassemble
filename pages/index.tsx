@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
+import { fetcher as fetch } from "@services/api";
+
 import Greeting from "@components/Greeting";
 import { Box, Flex } from "@components/Box";
 import { H1, P } from "@components/Text";
@@ -11,9 +13,16 @@ import SEO from "@components/SEO";
 
 import useAuth from "@hooks/useAuth";
 
+interface Response {
+  success: boolean;
+  msg: string;
+  name: string;
+}
+
 export const Home: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -24,16 +33,36 @@ export const Home: React.FC = () => {
     }
   }, []);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email && !password) {
       toast.error("Preencha todos campos!");
       return;
     }
 
-    setUser({ name: "Vinicius", username: email });
+    setIsLoading(true);
 
-    router.push("/collections");
+    try {
+      const { data, error } = await fetch<Response>("/do_login", {
+        method: "POST",
+        body: JSON.stringify({
+          username: email,
+          password: btoa(password),
+        }),
+      });
+
+      if (!data?.success || error) {
+        toast.error(data?.msg || "Falha ao fazer login");
+        return;
+      }
+
+      setUser({ name: data.name, username: email });
+      router.push("/collections");
+    } catch (e) {
+      toast.error("Falha ao fazer login");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -73,15 +102,16 @@ export const Home: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <Box height="72px" />
-              <Button width="100%" type="submit">
+              <Button width="100%" type="submit" loading={isLoading}>
                 LOGIN
               </Button>
             </form>
-            <Box height={5} />
             <Button
               width="100%"
               variant="secondary"
               onClick={() => router.push("/register")}
+              maxWidth={410}
+              mt={4}
             >
               CRIAR UMA CONTA
             </Button>

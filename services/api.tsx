@@ -11,7 +11,15 @@ export async function fetcher<Data, Error = unknown>(
 ): Promise<{ data: Data | null; error: Error | null }> {
   try {
     const [path, ...params] = args;
-    const res = await fetch(`${baseURL}${path}`, ...params);
+    const [options] = params;
+    const res = await fetch(`${baseURL}${path}`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      ...options,
+    });
+
     const data = (await res.json()) as Data;
     return { data, error: null };
   } catch (error) {
