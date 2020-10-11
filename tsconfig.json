@@ -19,7 +19,8 @@
       "@styles/*": ["./styles/*"],
       "@components/*": ["./components/*"],
       "@services/*": ["./services/*"],
-      "@hooks/*": ["./hooks/*"]
+      "@hooks/*": ["./hooks/*"],
+      "@lib/*": ["./lib/*"]
     }
   },
   "exclude": ["node_modules", ".next", "out"],

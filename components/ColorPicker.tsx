@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { theme, styled } from "@styles/theme";
 import { Box, Flex } from "./Box";
 import { Text } from "./Text";
-import Button from "./Button";
+
+type ColorNames = "green" | "yellow" | "blue" | "purple" | "orange" | "red";
+type Color = {
+  name: ColorNames;
+  hex: string;
+};
 
 interface Props {
-  onChangeColor?: (color: string) => void;
+  onChangeColor?: (color: ColorNames) => void;
+  selectedColorName?: ColorNames;
 }
 
-const colors = [
+const colors: Color[] = [
   {
     name: "green",
     hex: theme.colors.collections.green,
@@ -36,7 +42,7 @@ const colors = [
   },
 ];
 
-const Color = styled.button<{ background: string; selected: boolean }>`
+const ColorButton = styled.button<{ background: string; selected: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,9 +56,26 @@ const Color = styled.button<{ background: string; selected: boolean }>`
   cursor: pointer;
 `;
 
-const ColorPicker: React.FC<Props> = () => {
-  const [selectedColor, setSelectedColor] = useState("green");
+export function useColor(
+  defaultColor: ColorNames = "green",
+  onChange?: (color: { name: string; hex: string }) => void
+): [Color, React.Dispatch<React.SetStateAction<ColorNames>>] {
+  const [selectedColor, setSelectedColor] = useState(defaultColor);
 
+  useEffect(() => {
+    onChange?.(colors.find((c) => c.name === selectedColor) as Color);
+  }, [selectedColor]);
+
+  return [
+    colors.find((c) => c.name === selectedColor) as Color,
+    setSelectedColor,
+  ];
+}
+
+const ColorPicker: React.FC<Props> = ({
+  selectedColorName = "green",
+  onChangeColor,
+}) => {
   return (
     <Box>
       <Text
@@ -67,18 +90,16 @@ const ColorPicker: React.FC<Props> = () => {
       </Text>
       <Flex>
         {colors.map((color) => (
-          <Color
+          <ColorButton
             key={color.hex}
             background={color.hex}
-            selected={selectedColor === color.name}
-            onClick={() => setSelectedColor(color.name)}
+            selected={selectedColorName === color.name}
+            onClick={() => onChangeColor?.(color.name)}
+            type="button"
           >
-            {selectedColor === color.name && <img src="/icons/check.svg" />}
-          </Color>
+            {selectedColorName === color.name && <img src="/icons/check.svg" />}
+          </ColorButton>
         ))}
-      </Flex>
-      <Flex justifyContent="center" mt="80px">
-        <Button>SALVAR COLEÇÃO</Button>
       </Flex>
     </Box>
   );

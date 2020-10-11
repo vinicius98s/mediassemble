@@ -28,5 +28,9 @@ export async function fetcher<Data, Error = unknown>(
 }
 
 export const SWRProvider: React.FC = ({ children }) => {
-  return <SWRConfig value={{ fetcher }}>{children}</SWRConfig>;
+  return (
+    <SWRConfig value={{ fetcher, revalidateOnFocus: false }}>
+      {children}
+    </SWRConfig>
+  );
 };

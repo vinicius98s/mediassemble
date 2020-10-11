@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   background: ${(p) => p.theme.colors.white};
   box-shadow: 0px 1px 10px -1px rgba(0, 0, 0, 0.08);
   width: 100%;
+  max-width: 500px;
   height: 220px;
   position: relative;
   padding: ${(p) => `${p.theme.space[5]}px ${p.theme.space[6]}px`};
@@ -20,7 +21,7 @@ const Wrapper = styled.div`
 const Border = styled.div<{ color: Props["color"] }>`
   width: 8px;
   height: 100%;
-  background: ${(p) => p.theme.colors.collections[p.color]};
+  background: ${(p) => p.color};
   border-radius: 12px 0 0 12px;
   position: absolute;
   left: 0;
@@ -34,11 +35,22 @@ const TotalFiles = styled.div`
 `;
 
 interface Props {
-  color: keyof typeof colors["collections"];
+  color: string;
   name: string;
   recentFiles: Array<{ name: string; type: string }>;
   totalFiles: number;
   slug: string;
+}
+
+function fileIcon(extension: string) {
+  switch (extension) {
+    case "mp3":
+      return "/icons/mic.svg";
+    case "mp4":
+      return "/icons/camera.svg";
+    default:
+      return "";
+  }
 }
 
 const CollectionCard: React.FC<Props> = ({
@@ -53,12 +65,7 @@ const CollectionCard: React.FC<Props> = ({
       <Wrapper>
         <Border color={color} />
         <Flex alignItems="center" mb={4}>
-          <i
-            data-eva="inbox"
-            data-eva-fill="#212529"
-            data-eva-height="24"
-            data-eva-width="24"
-          />
+          <img src="/icons/inbox.png" />
           <Text fontWeight="400" fontSize={4} ml={2}>
             {name}
           </Text>
@@ -69,12 +76,7 @@ const CollectionCard: React.FC<Props> = ({
         {recentFiles.length ? (
           recentFiles.map((file, index) => (
             <Flex key={index} alignItems="center" mb="12px">
-              <i
-                data-eva="mic-outline"
-                data-eva-fill="#212529"
-                data-eva-height="20"
-                data-eva-width="20"
-              />
+              <img src={fileIcon(file.type)} />
               <Text ml={2} fontSize="14px">
                 {file.name}
               </Text>
@@ -82,14 +84,9 @@ const CollectionCard: React.FC<Props> = ({
           ))
         ) : (
           <Flex alignItems="center">
-            <i
-              data-eva="slash-outline"
-              data-eva-fill="#212529"
-              data-eva-height="20"
-              data-eva-width="20"
-            />
+            <img src="/icons/slash.svg" />
             <Text ml={3} fontSize="14px">
-              Arquivos não encontrados
+              Nenhum arquivo encontrado
             </Text>
           </Flex>
         )}
