@@ -20,8 +20,7 @@ import { fetcher as fetch } from "@services/api";
 import { styled } from "@styles/theme";
 
 import useAuth from "@hooks/useAuth";
-
-import slugify from "@lib/slugify";
+import { fileInfo } from "@lib/files";
 
 const CollectionsWrapper = styled.div`
   width: 100%;
@@ -32,6 +31,7 @@ const CollectionsWrapper = styled.div`
 
   @media (max-width: 1480px) {
     grid-template-columns: auto auto auto;
+    min-width: 320px;
   }
 
   div:not(:last-of-type) {
@@ -61,10 +61,13 @@ type ResponseError = {
 };
 
 const formatRecentFileNames = (files: Array<{ filename: string }>) => {
-  return files.map((file) => ({
-    name: file.filename,
-    type: file.filename.split(".").pop() as string,
-  }));
+  return files.map((file) => {
+    const info = fileInfo(file.filename);
+    return {
+      type: info?.extension as string,
+      name: info?.name as string,
+    };
+  });
 };
 
 type AddCollectionResponse = { success: boolean; msg: string };
@@ -158,7 +161,7 @@ const Collections: React.FC = () => {
         </Flex>
       </Modal>
 
-      <SEO title="Collections" description="Collections page" />
+      <SEO title="Coleções" description="Página de coleções" />
 
       <Container
         title="Minhas Coleções"
@@ -175,7 +178,7 @@ const Collections: React.FC = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Spinner size={40} dark />
+            <Spinner size={35} dark />
           </Flex>
         ) : !data?.data.collections?.length ? (
           <Text fontSize={3}>Parece que você não tem nenhuma coleção</Text>
@@ -188,7 +191,6 @@ const Collections: React.FC = () => {
                 name={collection.name}
                 recentFiles={formatRecentFileNames(collection.recent_files)}
                 totalFiles={collection.total_files}
-                slug={slugify(collection.name)}
               />
             ))}
           </CollectionsWrapper>

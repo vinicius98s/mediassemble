@@ -5,12 +5,16 @@ import { styled } from "@styles/theme";
 
 import { Box, Flex } from "./Box";
 import { Text } from "./Text";
+import { fileInfo } from "@lib/files";
 
 interface Props {
   files: Array<{
     name: string;
   }>;
   chooseColleciton?: boolean;
+  selectedFileName?: string;
+  onClickFile?: (fileName: string) => void;
+  accordion?: JSX.Element;
 }
 
 const Container = styled(Box)`
@@ -33,7 +37,8 @@ const Container = styled(Box)`
   }
 `;
 
-const FileBox = styled(Flex)`
+const FileBox = styled(Flex)<{ isSelected: boolean }>`
+  flex-wrap: wrap;
   align-items: center;
   background: #ffffff;
   box-shadow: 0px 1px 10px -1px rgba(0, 0, 0, 0.08);
@@ -41,8 +46,10 @@ const FileBox = styled(Flex)`
   padding: 22px 16px;
   margin-bottom: 30px;
   position: relative;
+  cursor: pointer;
+  border: ${(p) => (p.isSelected ? "2px solid #0096c7" : "none")};
 
-  > div {
+  > .select {
     width: 30%;
     position: absolute;
     right: 12%;
@@ -51,6 +58,7 @@ const FileBox = styled(Flex)`
   button {
     position: absolute;
     right: 8px;
+    top: 22px;
     border: none;
     background: none;
     outline: none;
@@ -64,17 +72,29 @@ const options = [
   { value: "vanilla", label: "Vanilla" },
 ];
 
-const ListFiles: React.FC<Props> = ({ files, chooseColleciton }) => {
+const ListFiles: React.FC<Props> = ({
+  files,
+  chooseColleciton,
+  selectedFileName,
+  onClickFile,
+  accordion,
+}) => {
   return (
     <Container>
       {files.map((file, index) => (
-        <FileBox key={index}>
-          <img src="/icons/mic.svg" />
+        <FileBox
+          // @ts-ignore
+          onClick={() => onClickFile?.(file.name)}
+          key={`${file.name}_${index}`}
+          isSelected={selectedFileName === file.name}
+        >
+          <img src={fileInfo(file.name)?.icon} />
           <Text ml={2} fontSize="18px" fontWeight="500">
             {file.name}
           </Text>
           {chooseColleciton && (
             <Select
+              className="select"
               value={{ value: "escola", label: "Escola" }}
               options={options}
               theme={(theme) => ({
@@ -106,6 +126,7 @@ const ListFiles: React.FC<Props> = ({ files, chooseColleciton }) => {
           <button>
             <img src="/icons/dots.svg" />
           </button>
+          {accordion && selectedFileName === file.name && accordion}
         </FileBox>
       ))}
     </Container>

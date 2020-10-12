@@ -15,6 +15,12 @@ const GlobalTheme = () => (
       body {
         background: ${theme.colors.offWhite};
       }
+
+      audio,
+      video,
+      button {
+        outline: none;
+      }
     `}
   />
 );

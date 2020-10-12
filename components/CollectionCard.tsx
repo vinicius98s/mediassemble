@@ -1,7 +1,9 @@
 import React from "react";
 import Link from "next/link";
 
-import { colors, styled } from "@styles/theme";
+import { styled } from "@styles/theme";
+
+import { fileInfo } from "@lib/files";
 
 import { Flex } from "./Box";
 import { Text } from "./Text";
@@ -39,18 +41,6 @@ interface Props {
   name: string;
   recentFiles: Array<{ name: string; type: string }>;
   totalFiles: number;
-  slug: string;
-}
-
-function fileIcon(extension: string) {
-  switch (extension) {
-    case "mp3":
-      return "/icons/mic.svg";
-    case "mp4":
-      return "/icons/camera.svg";
-    default:
-      return "";
-  }
 }
 
 const CollectionCard: React.FC<Props> = ({
@@ -58,10 +48,9 @@ const CollectionCard: React.FC<Props> = ({
   name,
   recentFiles,
   totalFiles,
-  slug,
 }) => {
   return (
-    <Link href="/collections/[collection]" as={`/collections/${slug}`}>
+    <Link href="/collections/[collection]" as={`/collections/${name}`}>
       <Wrapper>
         <Border color={color} />
         <Flex alignItems="center" mb={4}>
@@ -76,7 +65,7 @@ const CollectionCard: React.FC<Props> = ({
         {recentFiles.length ? (
           recentFiles.map((file, index) => (
             <Flex key={index} alignItems="center" mb="12px">
-              <img src={fileIcon(file.type)} />
+              <img src={fileInfo(file.name)?.icon} />
               <Text ml={2} fontSize="14px">
                 {file.name}
               </Text>

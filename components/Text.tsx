@@ -15,6 +15,7 @@ import { Colors } from "@styles/theme";
 
 type Props = {
   color?: Colors;
+  onClick?: () => void;
 } & LayoutProps &
   SpaceProps &
   TypographyProps;
