@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 
 import { styled } from "@styles/theme";
@@ -6,15 +6,28 @@ import { styled } from "@styles/theme";
 import { Box, Flex } from "./Box";
 import { Text } from "./Text";
 import { fileInfo } from "@lib/files";
+import Dropdown from "./Dropdown";
+
+type Collection = {
+  value: string;
+  label: string;
+};
 
 interface Props {
   files: Array<{
-    name: string;
+    fileName: string;
+    collection?: Collection;
   }>;
-  chooseColleciton?: boolean;
   selectedFileName?: string;
   onClickFile?: (fileName: string) => void;
   accordion?: JSX.Element;
+  collections?: Array<{ label: string; value: string }>;
+  onChangeCollectionFile?: (c: Collection, fileName: string) => void;
+  dropdownOptions?: {
+    label: string;
+    onClick?: (fileName: string) => void;
+    disabled?: boolean;
+  }[];
 }
 
 const Container = styled(Box)`
@@ -37,7 +50,7 @@ const Container = styled(Box)`
   }
 `;
 
-const FileBox = styled(Flex)<{ isSelected: boolean }>`
+const FileBox = styled(Flex)<{ isSelected: boolean; cursor?: string }>`
   flex-wrap: wrap;
   align-items: center;
   background: #ffffff;
@@ -46,7 +59,7 @@ const FileBox = styled(Flex)<{ isSelected: boolean }>`
   padding: 22px 16px;
   margin-bottom: 30px;
   position: relative;
-  cursor: pointer;
+  cursor: ${(p) => p.cursor || "initial"};
   border: ${(p) => (p.isSelected ? "2px solid #0096c7" : "none")};
 
   > .select {
@@ -55,7 +68,7 @@ const FileBox = styled(Flex)<{ isSelected: boolean }>`
     right: 12%;
   }
 
-  button {
+  > button {
     position: absolute;
     right: 8px;
     top: 22px;
@@ -66,37 +79,55 @@ const FileBox = styled(Flex)<{ isSelected: boolean }>`
   }
 `;
 
-const options = [
-  { value: "escola", label: "Escola" },
-  { value: "programacao", label: "Programação" },
-  { value: "vanilla", label: "Vanilla" },
-];
+const FileName = styled(Text)`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 45%;
+`;
 
 const ListFiles: React.FC<Props> = ({
   files,
-  chooseColleciton,
+  collections,
   selectedFileName,
   onClickFile,
   accordion,
+  onChangeCollectionFile,
+  dropdownOptions,
 }) => {
+  const [showDropdown, setShowDropdown] = useState("");
+  const toggleShowDropdown = (fileName: string) => {
+    if (showDropdown === "") {
+      setShowDropdown(fileName);
+    } else {
+      setShowDropdown("");
+    }
+  };
+
   return (
     <Container>
       {files.map((file, index) => (
         <FileBox
           // @ts-ignore
-          onClick={() => onClickFile?.(file.name)}
-          key={`${file.name}_${index}`}
-          isSelected={selectedFileName === file.name}
+          onClick={() => onClickFile?.(file.fileName)}
+          key={`${file.fileName}_${index}`}
+          isSelected={selectedFileName === file.fileName}
+          cursor={!collections ? "pointer" : undefined}
         >
-          <img src={fileInfo(file.name)?.icon} />
-          <Text ml={2} fontSize="18px" fontWeight="500">
-            {file.name}
-          </Text>
-          {chooseColleciton && (
+          <img src={fileInfo(file.fileName)?.icon} />
+          <FileName ml={2} fontSize="18px" fontWeight="500">
+            {file.fileName}
+          </FileName>
+          {collections?.length && (
             <Select
               className="select"
-              value={{ value: "escola", label: "Escola" }}
-              options={options}
+              value={collections.find(
+                (c) => c.value === file.collection?.value
+              )}
+              options={collections}
+              onChange={(value) =>
+                onChangeCollectionFile?.(value as Collection, file.fileName)
+              }
               theme={(theme) => ({
                 ...theme,
                 borderRadius: 8,
@@ -109,7 +140,7 @@ const ListFiles: React.FC<Props> = ({
               styles={{
                 control: (provided) => ({
                   ...provided,
-                  background: "#DEE2E6",
+                  background: "#F8F9FA",
                   border: "none",
                   boxShadow: "none",
                   fontSize: 15,
@@ -119,14 +150,37 @@ const ListFiles: React.FC<Props> = ({
                   ...provided,
                   background: state.isSelected ? "#DEE2E6" : "transparent",
                   color: "#212529",
+                  cursor: "pointer",
                 }),
               }}
             />
           )}
-          <button>
-            <img src="/icons/dots.svg" />
-          </button>
-          {accordion && selectedFileName === file.name && accordion}
+          {accordion && selectedFileName === file.fileName && accordion}
+          {dropdownOptions && (
+            <>
+              <button onClick={() => toggleShowDropdown(file.fileName)}>
+                <img src="/icons/dots.svg" />
+              </button>
+              <Dropdown
+                style={{
+                  right: 36,
+                  top: 20,
+                  width: 100,
+                  zIndex: 9999,
+                }}
+                showOptions={
+                  showDropdown !== "" && file.fileName === showDropdown
+                }
+                options={dropdownOptions.map((o) => ({
+                  ...o,
+                  onClick: () => {
+                    o.onClick?.(file.fileName);
+                    setShowDropdown("");
+                  },
+                }))}
+              />
+            </>
+          )}
         </FileBox>
       ))}
     </Container>

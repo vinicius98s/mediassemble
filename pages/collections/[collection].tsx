@@ -111,14 +111,14 @@ const Collections: React.FC = () => {
               <Text>Você não tem arquivos nessa coleção</Text>
             ) : (
               <ListFiles
-                onClickFile={(fileName) =>
+                onClickFile={(fileName) => {
                   setSelectedFile(
                     data.data.files.find((f) => f.name === fileName)
-                  )
-                }
+                  );
+                }}
                 selectedFileName={selectedFile?.name}
                 files={data?.data.files.map((file) => ({
-                  name: file.name,
+                  fileName: file.name,
                 }))}
                 accordion={
                   <>
@@ -151,6 +151,7 @@ const Collections: React.FC = () => {
               username={user?.username as string}
               filename={selectedFile?.name}
               playerRef={playerRef}
+              collectionName={collectionName}
             />
           </Flex>
         </Flex>

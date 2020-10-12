@@ -11,6 +11,7 @@ import Button from "../Button";
 import Spinner from "../Spinner";
 
 import * as S from "./styles";
+import useLocalStorage from "@hooks/useLocalStorage";
 
 interface Props {
   transcript_url?: string | false;
@@ -19,6 +20,7 @@ interface Props {
   username: string;
   filename?: string;
   playerRef: React.RefObject<ReactPlayer>;
+  collectionName: string;
 }
 
 interface Response {
@@ -48,6 +50,7 @@ const ConvertedText: React.FC<Props> = ({
   username,
   filename,
   playerRef,
+  collectionName,
 }) => {
   const [
     transcriptedText,
@@ -57,7 +60,11 @@ const ConvertedText: React.FC<Props> = ({
   // TODO: implement it with localStorage
   const [loadingTranscriptedText, setLoadingTranscriptedText] = useState(false);
 
-  const [isTranscribingFile, setIsTranscribingFile] = useState(false);
+  const localStorageKey = `${filename}-${collectionName}`;
+  const [isTranscribingFile, setIsTranscribingFile] = useLocalStorage(
+    localStorageKey,
+    false
+  );
 
   const falsyTranscriptUrl = transcript_url === false;
 
@@ -108,8 +115,6 @@ const ConvertedText: React.FC<Props> = ({
       toast.success("Arquivo transcrito com sucesso!");
     } catch (e) {
       toast.error("Falha ao transcrever arquivo!");
-    } finally {
-      setIsTranscribingFile(false);
     }
   }
 
@@ -196,7 +201,9 @@ const ConvertedText: React.FC<Props> = ({
                 {falsyTranscriptUrl && (
                   <>
                     <Text fontSize="17px">
-                      Transcreva esse arquivo para texto!
+                      {isTranscribingFile
+                        ? "Estamos transcrevendo seu arquivo"
+                        : "Transcreva esse arquivo para texto!"}
                     </Text>
                     <Button
                       loading={isTranscribingFile}

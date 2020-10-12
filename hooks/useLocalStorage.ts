@@ -1,9 +1,8 @@
 import { useState } from "react";
 
-type Keys = "user";
 type ReturnValue<T> = [T, (value: T) => void];
 
-function useLocalStorage<T>(keyValue: Keys, initialValue: T): ReturnValue<T> {
+function useLocalStorage<T>(keyValue: string, initialValue: T): ReturnValue<T> {
   const keyPrefix = "@mediassemble";
   const key = `${keyPrefix}/${keyValue}`;
 

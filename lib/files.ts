@@ -1,5 +1,5 @@
 export function fileInfo(fileName: string) {
-  const extension = fileName.split(".").pop() as string;
+  const extension = fileName?.split(".").pop();
   switch (extension) {
     case "mp3":
       return {
