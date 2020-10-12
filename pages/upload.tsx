@@ -17,14 +17,14 @@ import Spinner from "@components/Spinner";
 
 import useAuth from "@hooks/useAuth";
 
-import { Wrapper, UploadInput } from "./_upload/styles";
+import { Wrapper, UploadInput } from "../upload/styles";
 import {
   Data,
   Files,
   ResponseError,
   SignedURLResponse,
   SignedUrl,
-} from "./_upload/types";
+} from "../upload/types";
 
 const Upload = () => {
   const [collections, setCollections] = useState<
