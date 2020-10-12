@@ -59,18 +59,20 @@ const ConvertedText: React.FC<Props> = ({
 
   const [isTranscribingFile, setIsTranscribingFile] = useState(false);
 
-  const falsyTranscriptUrl =
-    typeof transcript_url === "boolean" || !transcript_url;
+  const falsyTranscriptUrl = transcript_url === false;
 
   useEffect(() => {
-    if (falsyTranscriptUrl) {
+    if (falsyTranscriptUrl || !transcript_url) {
       setTranscriptedText(null);
-    } else {
+      return;
+    }
+
+    if (transcript_url) {
       (async () => {
         try {
           setLoadingTranscriptedText(true);
           const res = await fetch(
-            (transcript_url as string)
+            transcript_url
               .replace("/mediassemble-transcripts/", "/")
               .replace("https://", "https://mediassemble-transcripts.")
           );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 
 import { styled } from "@styles/theme";
@@ -7,6 +7,8 @@ import { fileInfo } from "@lib/files";
 
 import { Flex } from "./Box";
 import { Text } from "./Text";
+import Dropdown from "./Dropdown";
+import { useRouter } from "next/router";
 
 const Wrapper = styled.div`
   cursor: pointer;
@@ -18,6 +20,14 @@ const Wrapper = styled.div`
   height: 220px;
   position: relative;
   padding: ${(p) => `${p.theme.space[5]}px ${p.theme.space[6]}px`};
+
+  > button {
+    position: absolute;
+    right: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
 `;
 
 const Border = styled.div<{ color: Props["color"] }>`
@@ -49,10 +59,40 @@ const CollectionCard: React.FC<Props> = ({
   recentFiles,
   totalFiles,
 }) => {
+  const [showOptions, setShowOptions] = useState(false);
+  const router = useRouter();
+
+  const toggleOptions = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    setShowOptions(!showOptions);
+  };
+
+  const onClickSendFiles = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    router.push("/upload");
+  };
+
   return (
     <Link href="/collections/[collection]" as={`/collections/${name}`}>
       <Wrapper>
         <Border color={color} />
+        <button onClick={toggleOptions}>
+          <img src="/icons/dots.svg" />
+        </button>
+        <Dropdown
+          style={{
+            right: 14,
+          }}
+          showOptions={showOptions}
+          options={[
+            { label: "Deletar", disabled: true },
+            { label: "Enviar arquivos", onClick: onClickSendFiles },
+          ]}
+        />
         <Flex alignItems="center" mb={4}>
           <img src="/icons/inbox.png" />
           <Text fontWeight="400" fontSize={4} ml={2}>

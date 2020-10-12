@@ -18,7 +18,7 @@ const Spinner = styled.div<SpinnerProps>`
   border: 2px solid
     ${(p) => (p.dark ? "rgba(45, 55, 72, 0.3)" : "rgba(255, 255, 255, 0.3)")};
   border-radius: 50%;
-  border-top-color: ${(p) => (p.dark ? "#495057" : "#ffffff")};
+  border-top-color: ${(p) => (p.dark ? "#0096c7" : "#ffffff")};
   animation: ${spin} 1s ease-in-out infinite;
 `;
 

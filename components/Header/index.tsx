@@ -1,36 +1,27 @@
-import React, { createRef, useState } from "react";
+import React, { useState } from "react";
 
 import { Wrapper } from "./styles";
 
 import useAuth from "@hooks/useAuth";
-import useClickOutsideElement from "@hooks/useClickOutsideElement";
+import Dropdown from "@components/Dropdown";
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const [showOptions, setShowOptions] = useState(false);
 
-  const optionsBoxRef = createRef<HTMLDivElement>();
-
   const toggleShowOptions = () => {
     setShowOptions(!showOptions);
   };
 
-  useClickOutsideElement(
-    {
-      ref: optionsBoxRef,
-      onClickOutside: (e) => {
-        const path = e.composedPath();
-        for (const el of path) {
-          if ((el as HTMLElement).id === "show-options") {
-            return;
-          }
-        }
-
-        setShowOptions(false);
-      },
-    },
-    [optionsBoxRef]
-  );
+  const onClickOutsideDropdown = (e: MouseEvent) => {
+    const path = e.composedPath();
+    for (const el of path) {
+      if ((el as HTMLElement).id === "show-options") {
+        return;
+      }
+    }
+    setShowOptions(false);
+  };
 
   return (
     <Wrapper>
@@ -42,18 +33,19 @@ const Header: React.FC = () => {
           </span>
           <img src="/icons/arrow-down.svg" />
         </button>
-        {showOptions && (
-          <div ref={optionsBoxRef}>
-            <ul>
-              <li>
-                <button disabled>Meu perfil</button>
-              </li>
-              <li>
-                <button onClick={logout}>Logout</button>
-              </li>
-            </ul>
-          </div>
-        )}
+        <Dropdown
+          style={{
+            width: 110,
+            right: 80,
+            marginTop: 8,
+          }}
+          onClickOutside={onClickOutsideDropdown}
+          showOptions={showOptions}
+          options={[
+            { label: "Meu perfil", disabled: true },
+            { label: "Logout", onClick: logout },
+          ]}
+        />
       </div>
     </Wrapper>
   );
