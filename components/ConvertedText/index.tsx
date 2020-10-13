@@ -11,7 +11,6 @@ import Button from "../Button";
 import Spinner from "../Spinner";
 
 import * as S from "./styles";
-import useLocalStorage from "@hooks/useLocalStorage";
 
 interface Props {
   transcript_url?: string | false;
@@ -20,7 +19,8 @@ interface Props {
   username: string;
   filename?: string;
   playerRef: React.RefObject<ReactPlayer>;
-  collectionName: string;
+  isFileBeingTranscripted: boolean;
+  onClickTranscribeFile: () => void;
   file?: {
     name: string;
     public_url: string;
@@ -55,21 +55,15 @@ const ConvertedText: React.FC<Props> = ({
   username,
   filename,
   playerRef,
-  collectionName,
+  isFileBeingTranscripted,
+  onClickTranscribeFile,
 }) => {
   const [
     transcriptedText,
     setTranscriptedText,
   ] = useState<TranscriptedText | null>(null);
   const [searchWord, setSearchWord] = useState("");
-  // TODO: implement it with localStorage
   const [loadingTranscriptedText, setLoadingTranscriptedText] = useState(false);
-
-  const localStorageKey = `${filename}-${collectionName}`;
-  const [isTranscribingFile, setIsTranscribingFile] = useLocalStorage(
-    localStorageKey,
-    false
-  );
 
   const falsyTranscriptUrl = file?.transcript_url === false;
 
@@ -95,7 +89,6 @@ const ConvertedText: React.FC<Props> = ({
           toast.error("Erro ao buscar texto transcrito!");
         } finally {
           setLoadingTranscriptedText(false);
-          setIsTranscribingFile(false);
         }
       })();
     }
@@ -103,8 +96,6 @@ const ConvertedText: React.FC<Props> = ({
 
   async function convertText() {
     try {
-      setIsTranscribingFile(true);
-
       const { data, error } = await apiFetch<Response>("/convert_to_text_pub", {
         method: "POST",
         body: JSON.stringify({
@@ -118,10 +109,9 @@ const ConvertedText: React.FC<Props> = ({
         return;
       }
 
-      toast.dismiss("Iremos transcrever o seu arquivo!");
+      toast.info("Iremos transcrever o seu arquivo!");
     } catch (e) {
       toast.error("Falha ao transcrever arquivo!");
-      setIsTranscribingFile(false);
     }
   }
 
@@ -129,6 +119,11 @@ const ConvertedText: React.FC<Props> = ({
     playerRef.current?.seekTo(seconds - 0.2, "seconds");
     const player = playerRef.current?.getInternalPlayer() as HTMLMediaElement;
     player.play();
+  };
+
+  const handleOnClickTranscribeFile = async () => {
+    onClickTranscribeFile();
+    await convertText();
   };
 
   return (
@@ -208,13 +203,13 @@ const ConvertedText: React.FC<Props> = ({
                 {falsyTranscriptUrl && (
                   <>
                     <Text fontSize="17px">
-                      {isTranscribingFile
+                      {isFileBeingTranscripted
                         ? "Estamos transcrevendo seu arquivo"
                         : "Transcreva esse arquivo para texto!"}
                     </Text>
                     <Button
-                      loading={isTranscribingFile}
-                      onClick={convertText}
+                      loading={isFileBeingTranscripted}
+                      onClick={handleOnClickTranscribeFile}
                       mt={4}
                     >
                       TRANSCREVER

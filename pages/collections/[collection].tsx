@@ -22,6 +22,7 @@ import { fileInfo } from "@lib/files";
 
 import { styled } from "@styles/theme";
 import { toast } from "react-toastify";
+import useLocalStorage from "@hooks/useLocalStorage";
 
 interface ActionsProps {
   onDeleteClick?: () => void;
@@ -107,10 +108,28 @@ const Collections: React.FC = () => {
 
   const { data, error } = useSWR<Response>(`/list_files?${params}`, {
     revalidateOnMount: true,
-    refreshInterval: 10000,
+    refreshInterval: 3000,
   });
 
   const [selectedFile, setSelectedFile] = useState(data?.data.files[0]);
+  const [filesBeingTranscripted, setFilesBeingTranscripted] = useLocalStorage<
+    string[]
+  >("transcripting-files", []);
+
+  useEffect(() => {
+    if (selectedFile) {
+      const isCurrentTranscripting = filesBeingTranscripted.includes(
+        selectedFile.name
+      );
+      if (isCurrentTranscripting && !!selectedFile.transcript_url) {
+        setFilesBeingTranscripted(
+          filesBeingTranscripted.filter(
+            (filename) => filename !== selectedFile.name
+          )
+        );
+      }
+    }
+  }, [selectedFile]);
 
   useEffect(() => {
     if (data?.data.files) {
@@ -152,7 +171,7 @@ const Collections: React.FC = () => {
       `/search_in_files?${params}`
     );
 
-    if (!data?.success && !data?.files_found.length) {
+    if ((!data?.success && !data?.files_found.length) || error) {
       toast.warn("Termo não encontrado!");
       return;
     }
@@ -240,11 +259,25 @@ const Collections: React.FC = () => {
             <ConvertedText
               hasFiles={(data?.data.files.length || 0) > 0}
               file={selectedFile}
+              isFileBeingTranscripted={
+                selectedFile
+                  ? filesBeingTranscripted.includes(selectedFile.name)
+                  : false
+              }
               loading={loading}
               username={user?.username as string}
               filename={selectedFile?.name}
               playerRef={playerRef}
-              collectionName={collectionName}
+              onClickTranscribeFile={() => {
+                if (selectedFile) {
+                  setFilesBeingTranscripted([
+                    ...filesBeingTranscripted,
+                    selectedFile.name,
+                  ]);
+                } else {
+                  throw new Error("Clique no transcrever sem selectedFile");
+                }
+              }}
             />
           </Flex>
         </Flex>

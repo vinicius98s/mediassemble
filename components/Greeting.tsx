@@ -43,7 +43,7 @@ const Greeting: React.FC<Props> = ({ bg = "offWhite", children }) => {
         position="relative"
         overflow="hidden"
       >
-        <Box maxWidth={460} mt={246} ml={10}>
+        <Box maxWidth={490} mt={246} ml={10}>
           <H1 fontWeight="normal" fontSize={58} letterSpacing={-0.5}>
             Bem-vindo ao
           </H1>
@@ -55,8 +55,18 @@ const Greeting: React.FC<Props> = ({ bg = "offWhite", children }) => {
             fontSize={24}
             mt={4}
           >
-            Algum texto de ajuda viria aqui, para que as pessoas conheçam o
-            projeto.
+            Experimente a mais nova plataforma de transcrição de vídeo, áudios e
+            imagens. <br />
+            <br />
+          </H3>
+          <H3
+            color="dark.secondary"
+            fontWeight="normal"
+            lineHeight="29px"
+            fontSize={20}
+          >
+            Organize, transcreva e consulte, com facilidade seus mais imporantes
+            registros.
           </H3>
         </Box>
         <FilesImg src="/images/welcome.png" />

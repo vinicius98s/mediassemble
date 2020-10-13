@@ -54,6 +54,7 @@ export const Register = (): JSX.Element => {
       }
 
       toast.success("Usuário criado com sucesso!");
+      router.push("/");
     } catch (e) {
       toast.error("Erro ao criar usuário!");
     } finally {

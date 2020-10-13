@@ -92,7 +92,7 @@ const Collections: React.FC = () => {
 
   const { data, error, revalidate } = useSWR<Data, ResponseError>(
     `/list_collection?${params}`,
-    { refreshInterval: 5000, revalidateOnMount: true }
+    { refreshInterval: 3000, revalidateOnMount: true }
   );
 
   useEffect(() => {
