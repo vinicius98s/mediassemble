@@ -21,6 +21,11 @@ interface Props {
   filename?: string;
   playerRef: React.RefObject<ReactPlayer>;
   collectionName: string;
+  file?: {
+    name: string;
+    public_url: string;
+    transcript_url: string | false;
+  };
 }
 
 interface Response {
@@ -44,7 +49,7 @@ type TranscriptedText = {
 };
 
 const ConvertedText: React.FC<Props> = ({
-  transcript_url,
+  file,
   hasFiles,
   loading,
   username,
@@ -66,20 +71,20 @@ const ConvertedText: React.FC<Props> = ({
     false
   );
 
-  const falsyTranscriptUrl = transcript_url === false;
+  const falsyTranscriptUrl = file?.transcript_url === false;
 
   useEffect(() => {
-    if (falsyTranscriptUrl || !transcript_url) {
+    if (falsyTranscriptUrl || !file?.transcript_url) {
       setTranscriptedText(null);
       return;
     }
 
-    if (transcript_url) {
+    if (file.transcript_url) {
       (async () => {
         try {
           setLoadingTranscriptedText(true);
           const res = await fetch(
-            transcript_url
+            (file.transcript_url as string)
               .replace("/mediassemble-transcripts/", "/")
               .replace("https://", "https://mediassemble-transcripts.")
           );
@@ -90,10 +95,11 @@ const ConvertedText: React.FC<Props> = ({
           toast.error("Erro ao buscar texto transcrito!");
         } finally {
           setLoadingTranscriptedText(false);
+          setIsTranscribingFile(false);
         }
       })();
     }
-  }, [transcript_url]);
+  }, [file]);
 
   async function convertText() {
     try {
@@ -112,14 +118,15 @@ const ConvertedText: React.FC<Props> = ({
         return;
       }
 
-      toast.success("Arquivo transcrito com sucesso!");
+      toast.dismiss("Iremos transcrever o seu arquivo!");
     } catch (e) {
       toast.error("Falha ao transcrever arquivo!");
+      setIsTranscribingFile(false);
     }
   }
 
   const handleWordClick = (seconds: number) => {
-    playerRef.current?.seekTo(seconds - 0.5, "seconds");
+    playerRef.current?.seekTo(seconds - 0.2, "seconds");
     const player = playerRef.current?.getInternalPlayer() as HTMLMediaElement;
     player.play();
   };
@@ -134,7 +141,7 @@ const ConvertedText: React.FC<Props> = ({
         />
       </S.InputAndButtonWrapper>
       <S.TextContainer noFiles={!hasFiles}>
-        {loading ? (
+        {loading || loadingTranscriptedText ? (
           <Flex
             width="100%"
             height="100%"

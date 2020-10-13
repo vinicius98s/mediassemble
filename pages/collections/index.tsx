@@ -91,7 +91,8 @@ const Collections: React.FC = () => {
   const params = qs.stringify({ username: user?.username });
 
   const { data, error, revalidate } = useSWR<Data, ResponseError>(
-    `/list_collection?${params}`
+    `/list_collection?${params}`,
+    { refreshInterval: 5000, revalidateOnMount: true }
   );
 
   useEffect(() => {

@@ -34,7 +34,6 @@ const Upload = () => {
   const [loadingCollections, setLoadingCollections] = useState(false);
 
   const [isGeneratingSignedUrls, setIsGeneratingSignedUrls] = useState(false);
-  const [signedUrls, setSignedUrls] = useState<SignedUrl[]>([]);
 
   const router = useRouter();
 
@@ -157,7 +156,7 @@ const Upload = () => {
     setIsGeneratingSignedUrls(true);
     try {
       await Promise.all([...files].map(generateSingleSignedUrl));
-      toast.success("Arquivos enviadas com sucesso!");
+      toast.success("Arquivos enviados com sucesso!");
       setFiles([]);
     } catch (e) {
       toast.error("Falha ao gerar urls dos arquivos!");

@@ -34,7 +34,7 @@ const Container: React.FC<Props> = ({
   return (
     <>
       <Header />
-      <Box mx={10} mt={10} mb={10}>
+      <Box mx={10} mt={10}>
         <Flex flexDirection="row" width="100%" mb={9} alignItems="center">
           {collection && <Border color={collection.color} />}
           <Box>

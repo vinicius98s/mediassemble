@@ -4,6 +4,8 @@ import useSWR from "swr";
 import qs from "querystring";
 import ReactPlayer from "react-player/lazy";
 
+import { fetcher as fetch } from "@services/api";
+
 import SEO from "@components/SEO";
 import Container from "@components/Container";
 import { Box, Flex } from "@components/Box";
@@ -11,28 +13,65 @@ import Button from "@components/Button";
 import { Text } from "@components/Text";
 import ListFiles from "@components/ListFiles";
 import ConvertedText from "@components/ConvertedText";
+import Spinner from "@components/Spinner";
+// import DeleteCollectionModal from "@components/DeleteCollectionModal";
 
 import useAuth from "@hooks/useAuth";
-import Spinner from "@components/Spinner";
+
 import { fileInfo } from "@lib/files";
-// import DeleteCollectionModal from "@components/DeleteCollectionModal";
+
+import { styled } from "@styles/theme";
+import { toast } from "react-toastify";
 
 interface ActionsProps {
   onDeleteClick?: () => void;
   onUploadFilesClick?: () => void;
+  onChangeInput?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmitSearchForm?: (event: React.FormEvent<HTMLFormElement>) => void;
 }
+
+const ActionsWrapper = styled(Flex)`
+  form {
+    position: relative;
+
+    > button {
+      position: absolute;
+      right: 12px;
+      top: 0;
+    }
+
+    > input {
+      width: 420px;
+      margin-right: 12px;
+      border: 2px solid #00b4d8;
+      border-radius: 8px;
+      padding: 12px 16px;
+      outline: none;
+    }
+  }
+`;
 
 const Actions: React.FC<ActionsProps> = ({
   onDeleteClick,
   onUploadFilesClick,
-}) => (
-  <Flex ml="auto">
-    {/* <Button mr={4} variant="danger" onClick={onDeleteClick}>
-      DELETAR
-    </Button> */}
-    <Button onClick={onUploadFilesClick}>ENVIAR ARQUIVOS</Button>
-  </Flex>
-);
+  onChangeInput,
+  onSubmitSearchForm,
+}) => {
+  return (
+    <ActionsWrapper ml="auto">
+      {/* <Button mr={4} variant="danger" onClick={onDeleteClick}>
+        DELETAR
+      </Button> */}
+      <form onSubmit={onSubmitSearchForm}>
+        <input placeholder="Procure por arquivos" onChange={onChangeInput} />
+        <Button type="submit" variant="secondary">
+          PESQUISAR
+        </Button>
+      </form>
+      <Button onClick={onUploadFilesClick}>ENVIAR ARQUIVOS</Button>
+    </ActionsWrapper>
+  );
+};
 
 interface Response {
   data: {
@@ -44,7 +83,15 @@ interface Response {
   };
 }
 
+interface SearchResponse {
+  files_found: Array<string>;
+  success: boolean;
+}
+
 const Collections: React.FC = () => {
+  const [searchInFilesText, setSearchInFilesText] = useState("");
+  const [foundFiles, setFoundFiles] = useState<string[]>([]);
+
   const router = useRouter();
   const collectionName = router.query.collection as string;
 
@@ -58,15 +105,25 @@ const Collections: React.FC = () => {
     collection: collectionName,
   });
 
-  const { data, error } = useSWR<Response>(`/list_files?${params}`);
+  const { data, error } = useSWR<Response>(`/list_files?${params}`, {
+    revalidateOnMount: true,
+    refreshInterval: 10000,
+  });
 
   const [selectedFile, setSelectedFile] = useState(data?.data.files[0]);
 
   useEffect(() => {
-    if (data?.data.files[0]) {
-      setSelectedFile(data.data.files[0]);
+    if (data?.data.files) {
+      if (selectedFile) {
+        const newSelectedFile = data.data.files.find(
+          (f) => f.name === selectedFile.name
+        );
+        setSelectedFile(newSelectedFile);
+      } else {
+        setSelectedFile(data.data.files[0]);
+      }
     }
-  }, [data]);
+  }, [data, error]);
 
   const loading = !data && !error;
 
@@ -74,6 +131,36 @@ const Collections: React.FC = () => {
 
   const playerRef = createRef<ReactPlayer>();
 
+  useEffect(() => {
+    if (searchInFilesText === "") {
+      setFoundFiles([]);
+    }
+  }, [searchInFilesText]);
+
+  const handleSubmitSearchForm = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+
+    const params = qs.stringify({
+      username: user?.username,
+      collection: collectionName,
+      term: searchInFilesText,
+    });
+
+    const { data, error } = await fetch<SearchResponse>(
+      `/search_in_files?${params}`
+    );
+
+    if (!data?.success && !data?.files_found.length) {
+      toast.warn("Termo não encontrado!");
+      return;
+    }
+
+    if (data.files_found.length) {
+      setFoundFiles(data.files_found);
+    }
+  };
   return (
     <>
       {/* <DeleteCollectionModal /> */}
@@ -98,6 +185,8 @@ const Collections: React.FC = () => {
           <Actions
             // onDeleteClick={() => setIsDeleteModalOpen(true)}
             onUploadFilesClick={() => router.push("/upload")}
+            onChangeInput={(e) => setSearchInFilesText(e.target.value)}
+            onSubmitSearchForm={handleSubmitSearchForm}
           />
         }
       >
@@ -117,9 +206,13 @@ const Collections: React.FC = () => {
                   );
                 }}
                 selectedFileName={selectedFile?.name}
-                files={data?.data.files.map((file) => ({
-                  fileName: file.name,
-                }))}
+                files={data?.data.files
+                  .filter((file) =>
+                    foundFiles.length ? foundFiles.includes(file.name) : true
+                  )
+                  .map((file) => ({
+                    fileName: file.name,
+                  }))}
                 accordion={
                   <>
                     {new RegExp(/mp(3|4)/).test(
@@ -146,7 +239,7 @@ const Collections: React.FC = () => {
           <Flex ml="auto">
             <ConvertedText
               hasFiles={(data?.data.files.length || 0) > 0}
-              transcript_url={selectedFile?.transcript_url}
+              file={selectedFile}
               loading={loading}
               username={user?.username as string}
               filename={selectedFile?.name}
